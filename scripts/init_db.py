@@ -6,13 +6,16 @@ from app import models  # noqa: F401
 
 
 def ensure_directories() -> None:
-    settings.image_dir.mkdir(parents=True, exist_ok=True)
+    settings.raw_image_dir.mkdir(parents=True, exist_ok=True)
+    settings.processed_image_dir.mkdir(parents=True, exist_ok=True)
     settings.clip_dir.mkdir(parents=True, exist_ok=True)
 
     if settings.database_url.startswith("sqlite:///"):
         db_path = settings.database_url.replace("sqlite:///", "", 1)
         db_parent = Path(db_path).parent
         db_parent.mkdir(parents=True, exist_ok=True)
+
+
 
 
 def main() -> None:

@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     app_name: str = Field(default="observing-door", alias="APP_NAME")
     app_env: str = Field(default="dev", alias="APP_ENV")
     database_url: str = Field(default="sqlite:///./data/app.db", alias="DATABASE_URL")
-    image_dir: Path = Field(default=Path("./data/images"), alias="IMAGE_DIR")
+    raw_image_dir: Path = Field(default=Path("./data/images/raw"), alias="RAW_IMAGE_DIR")
+    processed_image_dir: Path = Field(default=Path("./data/images/processed"), alias="PROCESSED_IMAGE_DIR")
     clip_dir: Path = Field(default=Path("./data/clips"), alias="CLIP_DIR")
     timezone: str = Field(default="Asia/Taipei", alias="TIMEZONE")
 

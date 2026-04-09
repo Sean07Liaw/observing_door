@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class EventCreate(BaseModel):
@@ -38,5 +38,50 @@ class EventRead(BaseModel):
     created_at: datetime
 
     model_config = {
-        "from_attributes": True
+        "from_attributes": True,
     }
+
+
+class PrivacyRegion(BaseModel):
+    x: int = Field(..., ge=0)
+    y: int = Field(..., ge=0)
+    width: int = Field(..., gt=0)
+    height: int = Field(..., gt=0)
+
+
+class PrivacyConfig(BaseModel):
+    roi: Optional[PrivacyRegion] = None
+    mask_regions: list[PrivacyRegion] = Field(default_factory=list)
+    blur_regions: list[PrivacyRegion] = Field(default_factory=list)
+    mask_color: tuple[int, int, int] = (0, 0, 0)
+    blur_kernel_size: int = 31
+
+    @model_validator(mode="after")
+    def validate_blur_kernel_size(self) -> "PrivacyConfig":
+        if self.blur_kernel_size <= 0:
+            raise ValueError("blur_kernel_size must be > 0")
+        return self
+
+
+class CapturedImage(BaseModel):
+    source_type: str
+    source_value: str
+    frame: Any
+    width: int
+    height: int
+    captured_at: datetime
+
+    model_config = {
+        "arbitrary_types_allowed": True,
+    }
+
+
+class ProcessedImageResult(BaseModel):
+    source_type: str
+    source_value: str
+    output_path: str
+    width: int
+    height: int
+    privacy_flags: list[str]
+    captured_at: datetime
+    processed_at: datetime
