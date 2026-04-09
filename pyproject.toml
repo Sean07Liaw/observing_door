@@ -1,0 +1,17 @@
+[project]
+name = "observing-door"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.115.0",
+  "uvicorn==0.30.6",
+  "sqlalchemy==2.0.35",
+  "pydantic==2.9.2",
+  "pydantic-settings==2.5.2",
+  "python-dotenv==1.0.1",
+]
+
+[tool.uv]
+package = false
