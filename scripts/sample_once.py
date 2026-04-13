@@ -2,7 +2,7 @@ import argparse
 import json
 
 from app.db import SessionLocal
-from app.services.detector import detect_people_local
+from app.services.detector import detect_people
 from app.services.event_builder import build_observation_event
 from app.services.event_service import create_event
 from app.services.image_service import process_image_once
@@ -70,6 +70,19 @@ def main() -> None:
         help="Save an annotated detection debug image",
     )
     parser.add_argument(
+        "--detector-mode",
+        type=str,
+        choices=["hog", "yolo"],
+        default="hog",
+        help="Detection backend to use",
+    )
+    parser.add_argument(
+        "--yolo-model-name",
+        type=str,
+        default="yolov8n.pt",
+        help="YOLO model name or local model path",
+    )
+    parser.add_argument(
         "--min-width",
         type=int,
         default=48,
@@ -116,15 +129,17 @@ def main() -> None:
         blur_regions=args.blur,
     )
 
-    detection_result = detect_people_local(
+    detection_result = detect_people(
         image_result["output_path"],
+        detector_mode=args.detector_mode,
+        save_debug=args.save_debug_image,
         min_width=args.min_width,
         min_height=args.min_height,
         min_confidence=args.min_confidence,
         min_area=args.min_area,
         max_aspect_ratio=args.max_aspect_ratio,
         unknown_confidence_threshold=args.unknown_confidence_threshold,
-        save_debug=args.save_debug_image,
+        yolo_model_name=args.yolo_model_name,
     )
 
     event_in = build_observation_event(
